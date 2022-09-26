@@ -2,6 +2,7 @@ import { skipToken } from '@reduxjs/toolkit/dist/query'
 import { getSpaceUntilMaxLength } from '@testing-library/user-event/dist/utils'
 import React, { useCallback, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
+import OpeningCrawlHero from '../Components/OpeningCrawlHero'
 import { useGetFilmByIdQuery } from '../Services/films'
 import { useGetMultiplePeopleQuery } from '../Services/people'
 import { useGetMultiplePlanetsQuery } from '../Services/planets'
@@ -38,11 +39,6 @@ const Film = () => {
         setRelatedPlanets(planetIds)
     }, [isSuccess])
 
-    const renderOpeningCrawl = (text: string) => {
-        return text
-            .split('\n')
-            .map((row, index) => <p key={`crawl_${index}`}>{row}</p>)
-    }
     if (isLoading) return null
     if (filmError) {
         console.log(filmError)
@@ -52,12 +48,13 @@ const Film = () => {
         const { title, episode_id, release_date, opening_crawl } = filmById
         return (
             <div>
+                <OpeningCrawlHero title={title} text={opening_crawl} />
                 <h1>{title}</h1>
                 <h3>
                     Episode {episode_id} - {release_date}
                 </h3>
                 <h3>Opening crawl</h3>
-                <div>{renderOpeningCrawl(opening_crawl)}</div>
+                <div>{opening_crawl}</div>
                 {relatedCharctersData ? (
                     <div>
                         <h4>Related characters</h4>
