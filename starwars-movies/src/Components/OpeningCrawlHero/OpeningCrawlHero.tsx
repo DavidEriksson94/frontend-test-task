@@ -12,7 +12,6 @@ interface Props {
     text: string
 }
 const OpeningCrawlHero = ({ title, text }: Props) => {
-    console.log(text)
     const dividedText = () => {
         return text
             .split('\r\n\r\n')

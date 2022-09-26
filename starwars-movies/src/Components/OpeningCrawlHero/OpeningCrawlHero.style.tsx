@@ -5,10 +5,10 @@ const moveCrawlAnimation = keyframes`
     opacity: 0.0;
     transform: rotateX(8deg) scaleY(0.5) translateY(300px);
   }
-  10%{
+  2%{
     opacity: 1.0;
   }
-  90&{
+  98%{
     opacity: 1.0;
   }
   to {
@@ -19,6 +19,7 @@ const moveCrawlAnimation = keyframes`
 
 export const OpeningCrawlWrapper = styled.div`
     background: black;
+    background-image: url(https://cdn.pixabay.com/photo/2016/01/27/15/25/space-1164579_1280.png);
     position: relative;
     padding: 10px;
     right: 0;

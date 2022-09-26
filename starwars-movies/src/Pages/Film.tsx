@@ -1,12 +1,24 @@
 import { skipToken } from '@reduxjs/toolkit/dist/query'
-import { getSpaceUntilMaxLength } from '@testing-library/user-event/dist/utils'
 import React, { useCallback, useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import OpeningCrawlHero from '../Components/OpeningCrawlHero'
+import {
+    Section,
+    SectionBody,
+    SectionHeader,
+    SectionTitle,
+} from '../Components/GlobalStyles/Section'
 import { useGetFilmByIdQuery } from '../Services/films'
 import { useGetMultiplePeopleQuery } from '../Services/people'
 import { useGetMultiplePlanetsQuery } from '../Services/planets'
 import { extractParameterFromUrl } from '../Utils/StringUtils'
+import { UnstyledList, UnstyledListItem } from '../Components/GlobalStyles/List'
+import {
+    Page,
+    PageHeader,
+    PageHeaderSubTitle,
+    PageHeaderTitle,
+} from '../Components/GlobalStyles/Page'
 
 const Film = () => {
     const [title, setTitle] = useState<string>()
@@ -28,7 +40,6 @@ const Film = () => {
 
     useEffect(() => {
         if (!isSuccess) return
-        console.log(filmById)
         const characterIds: number[] = filmById.characters.map((character) =>
             Number(extractParameterFromUrl(character, 'people'))
         )
@@ -39,46 +50,103 @@ const Film = () => {
         setRelatedPlanets(planetIds)
     }, [isSuccess])
 
+    const renderOpeningCrawl = (text: string) =>
+        text.split('\r\n\r\n').map((paragraph) => <p>{paragraph}</p>)
+
     if (isLoading) return null
     if (filmError) {
-        console.log(filmError)
         return null
     }
     if (filmById) {
-        const { title, episode_id, release_date, opening_crawl } = filmById
+        const {
+            title,
+            episode_id,
+            release_date,
+            opening_crawl,
+            director,
+            producer,
+        } = filmById
+        console.log(filmById)
         return (
             <div>
                 <OpeningCrawlHero title={title} text={opening_crawl} />
-                <h1>{title}</h1>
-                <h3>
-                    Episode {episode_id} - {release_date}
-                </h3>
-                <h3>Opening crawl</h3>
-                <div>{opening_crawl}</div>
-                {relatedCharctersData ? (
-                    <div>
-                        <h4>Related characters</h4>
-                        <ul>
-                            {relatedCharctersData.map((character) => {
-                                return (
-                                    <li key={character.url}>
-                                        {character.name}
-                                    </li>
-                                )
-                            })}
-                        </ul>
-                    </div>
-                ) : null}
-                {relatedPlanetsData ? (
-                    <div>
-                        <h4>Related planets</h4>
-                        <ul>
-                            {relatedPlanetsData.map((planet) => {
-                                return <li key={planet.url}>{planet.name}</li>
-                            })}
-                        </ul>
-                    </div>
-                ) : null}
+                <Page roundedTop>
+                    <PageHeader>
+                        <PageHeaderTitle>{title}</PageHeaderTitle>
+                        <PageHeaderSubTitle>
+                            Episode {episode_id}
+                        </PageHeaderSubTitle>
+                    </PageHeader>
+
+                    <Section>
+                        <SectionHeader>
+                            <SectionTitle>Opening crawl</SectionTitle>
+                        </SectionHeader>
+                        <SectionBody>
+                            {renderOpeningCrawl(opening_crawl)}
+                        </SectionBody>
+                    </Section>
+                    <Section>
+                        <SectionHeader>
+                            <SectionTitle>Production</SectionTitle>
+                        </SectionHeader>
+                        <SectionBody>
+                            <p>Release date - {release_date}</p>
+                            <p>Director(s) - {director}</p>
+                            <p>Producer(s) - {producer}</p>
+                        </SectionBody>
+                    </Section>
+                    {relatedCharctersData ? (
+                        <Section>
+                            <SectionHeader>
+                                <SectionTitle>Related characters</SectionTitle>
+                            </SectionHeader>
+                            <SectionBody>
+                                <UnstyledList>
+                                    {relatedCharctersData.map((character) => {
+                                        const id = extractParameterFromUrl(
+                                            character.url,
+                                            'people'
+                                        )
+                                        return (
+                                            <UnstyledListItem
+                                                key={character.url}
+                                            >
+                                                <Link to={`/people/${id}`}>
+                                                    {character.name}
+                                                </Link>
+                                            </UnstyledListItem>
+                                        )
+                                    })}
+                                </UnstyledList>
+                            </SectionBody>
+                        </Section>
+                    ) : null}
+                    {relatedPlanetsData ? (
+                        <Section>
+                            <SectionHeader>
+                                <SectionTitle>Related planets</SectionTitle>
+                            </SectionHeader>
+                            <SectionBody>
+                                <UnstyledList>
+                                    {relatedPlanetsData.map((planet) => {
+                                        const id = extractParameterFromUrl(
+                                            planet.url,
+                                            'planets'
+                                        )
+                                        return (
+                                            <UnstyledListItem key={planet.url}>
+                                                <Link to={`/planet/${id}`}>
+                                                    {planet.name}
+                                                </Link>
+                                            </UnstyledListItem>
+                                        )
+                                    })}
+                                </UnstyledList>
+                            </SectionBody>
+                        </Section>
+                    ) : null}
+                </Page>
             </div>
         )
     }

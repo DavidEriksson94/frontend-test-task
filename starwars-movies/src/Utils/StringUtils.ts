@@ -3,6 +3,7 @@ export const extractParameterFromUrl = (
     keyBeforeValue: string
 ) => {
     const split = url.split('/')
-    const index = split.findIndex((val) => val === keyBeforeValue) + 1
-    return split[index]
+    const index = split.findIndex((val) => val === keyBeforeValue)
+    if (index < 0) return null
+    return split[index + 1]
 }
