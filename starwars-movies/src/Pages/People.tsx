@@ -87,7 +87,6 @@ const People = () => {
         mass,
         skin_color,
     } = personById
-    console.log(personById)
     return (
         <div>
             <Hero

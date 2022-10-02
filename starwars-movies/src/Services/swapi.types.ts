@@ -57,6 +57,7 @@ export interface Starship {
     crew: string
     edited: string
     hyperdrive_rating: string
+    passengers: string
     length: string
     manufacturer: string
     max_atmosphering_speed: string

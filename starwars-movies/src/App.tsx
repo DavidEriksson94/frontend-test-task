@@ -19,8 +19,8 @@ function App() {
                     <Route path="/films/:id" element={<Film />} />
                     <Route path="/people/:id" element={<People />} />
                     <Route path="/planets/:id" element={<Planet />} />
-                    <Route path="/species" element={<Species />} />
-                    <Route path="/starships" element={<Starships />} />
+                    <Route path="/species/:id" element={<Species />} />
+                    <Route path="/starships/:id" element={<Starships />} />
                     <Route path="/vehicles/:id" element={<Vehicles />} />
                 </Routes>
             </Router>

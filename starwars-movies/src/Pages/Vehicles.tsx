@@ -93,7 +93,7 @@ const Vehicles = () => {
                 </Section>
                 {relatedPeopleData ? (
                     <SectionOfRelatedItems
-                        title={`Known residents of ${name}`}
+                        title={`Known drivers of ${name}`}
                         data={relatedPeopleData}
                         type="people"
                     />
