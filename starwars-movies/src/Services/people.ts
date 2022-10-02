@@ -8,12 +8,15 @@ import { All, People } from './swapi.types'
 export const peopleApi = createApi({
     reducerPath: 'peopleApi',
     baseQuery: fetchBaseQuery({ baseUrl: 'https://swapi.dev/api' }),
+    tagTypes: ['People', 'Person'],
     endpoints: (builder) => ({
         getAllPeople: builder.query<All<People>, void>({
             query: () => `/people`,
+            providesTags: ['People'],
         }),
         getPeopleById: builder.query<People, number>({
             query: (id) => `/people/${id}`,
+            providesTags: (result, error, id) => [{ type: 'Person', id }],
         }),
         getMultiplePeople: builder.query<People[], number[]>({
             async queryFn(_arg, _queryApi, _extraOptions, fetchWithBQ) {

@@ -8,12 +8,15 @@ import { All, Vehicle } from './swapi.types'
 export const vehicleApi = createApi({
     reducerPath: 'vehicleApi',
     baseQuery: fetchBaseQuery({ baseUrl: 'https://swapi.dev/api' }),
+    tagTypes: ['Vehicle', 'Vehicles'],
     endpoints: (builder) => ({
         getAllVehicles: builder.query<All<Vehicle>, void>({
             query: () => `/vehicles`,
+            providesTags: ['Vehicles'],
         }),
         getVehicleById: builder.query<Vehicle, number>({
             query: (id) => `/vehicles/${id}`,
+            providesTags: (result, error, id) => [{ type: 'Vehicle', id }],
         }),
         getMultipleVehicles: builder.query<Vehicle[], number[]>({
             async queryFn(_arg, _queryApi, _extraOptions, fetchWithBQ) {

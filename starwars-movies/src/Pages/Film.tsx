@@ -21,12 +21,15 @@ import {
 } from '../Components/GlobalStyles/Page'
 import { useGetMultipleStarshipsQuery } from '../Services/starships'
 import { useGetMultipleVehiclesQuery } from '../Services/vehicles'
+import { SectionOfRelatedItems } from '../Components/SectionOfRelatedItems'
+import { useGetMultipleSpeciesQuery } from '../Services/species'
 
 const Film = () => {
     const [relatedPlanets, setRelatedPlanets] = useState<number[]>([])
     const [relatedCharacters, setRelatedCharacters] = useState<number[]>([])
     const [relatedStarships, setRelatedStarships] = useState<number[]>([])
     const [relatedVehicles, setRelatedVehicles] = useState<number[]>([])
+    const [relatedSpecies, setRelatedSpecies] = useState<number[]>([])
     const { id } = useParams()
     const {
         data: filmById,
@@ -43,6 +46,8 @@ const Film = () => {
         useGetMultipleStarshipsQuery(relatedStarships)
     const { data: relatedVehiclesData, error: relatedVehiclesError } =
         useGetMultipleVehiclesQuery(relatedVehicles)
+    const { data: relatedSpeciesData, error: relatedSpeciesError } =
+        useGetMultipleSpeciesQuery(relatedSpecies)
 
     useEffect(() => {
         if (!isSuccess) return
@@ -62,6 +67,10 @@ const Film = () => {
             Number(extractParameterFromUrl(vehicle, 'vehicles'))
         )
         setRelatedVehicles(vehicleIds)
+        const speciesIds: number[] = filmById.species.map((_species) =>
+            Number(extractParameterFromUrl(_species, 'species'))
+        )
+        setRelatedSpecies(speciesIds)
     }, [isSuccess])
 
     const renderOpeningCrawl = (text: string) =>
@@ -110,104 +119,39 @@ const Film = () => {
                         </SectionBody>
                     </Section>
                     {relatedCharctersData ? (
-                        <Section>
-                            <SectionHeader>
-                                <SectionTitle>Related characters</SectionTitle>
-                            </SectionHeader>
-                            <SectionBody>
-                                <UnstyledList>
-                                    {relatedCharctersData.map((character) => {
-                                        const id = extractParameterFromUrl(
-                                            character.url,
-                                            'people'
-                                        )
-                                        return (
-                                            <UnstyledListItem
-                                                key={character.url}
-                                            >
-                                                <Link to={`/people/${id}`}>
-                                                    {character.name}
-                                                </Link>
-                                            </UnstyledListItem>
-                                        )
-                                    })}
-                                </UnstyledList>
-                            </SectionBody>
-                        </Section>
+                        <SectionOfRelatedItems
+                            title="Related characters"
+                            data={relatedCharctersData}
+                            type="people"
+                        />
                     ) : null}
                     {relatedPlanetsData ? (
-                        <Section>
-                            <SectionHeader>
-                                <SectionTitle>Related planets</SectionTitle>
-                            </SectionHeader>
-                            <SectionBody>
-                                <UnstyledList>
-                                    {relatedPlanetsData.map((planet) => {
-                                        const id = extractParameterFromUrl(
-                                            planet.url,
-                                            'planets'
-                                        )
-                                        return (
-                                            <UnstyledListItem key={planet.url}>
-                                                <Link to={`/planet/${id}`}>
-                                                    {planet.name}
-                                                </Link>
-                                            </UnstyledListItem>
-                                        )
-                                    })}
-                                </UnstyledList>
-                            </SectionBody>
-                        </Section>
+                        <SectionOfRelatedItems
+                            title="Related planets"
+                            data={relatedPlanetsData}
+                            type="planets"
+                        />
                     ) : null}
                     {relatedStarshipsData ? (
-                        <Section>
-                            <SectionHeader>
-                                <SectionTitle>Related starships</SectionTitle>
-                            </SectionHeader>
-                            <SectionBody>
-                                <UnstyledList>
-                                    {relatedStarshipsData.map((starship) => {
-                                        const id = extractParameterFromUrl(
-                                            starship.url,
-                                            'starships'
-                                        )
-                                        return (
-                                            <UnstyledListItem
-                                                key={starship.url}
-                                            >
-                                                <Link to={`/starship/${id}`}>
-                                                    {starship.name}
-                                                </Link>
-                                            </UnstyledListItem>
-                                        )
-                                    })}
-                                </UnstyledList>
-                            </SectionBody>
-                        </Section>
+                        <SectionOfRelatedItems
+                            title="Related starships"
+                            data={relatedStarshipsData}
+                            type="starships"
+                        />
                     ) : null}
                     {relatedVehiclesData ? (
-                        <Section>
-                            <SectionHeader>
-                                <SectionTitle>Related vehicles</SectionTitle>
-                            </SectionHeader>
-                            <SectionBody>
-                                <UnstyledList>
-                                    {relatedVehiclesData.map((vehicle) => {
-                                        const id = extractParameterFromUrl(
-                                            vehicle.url,
-                                            'vehicles'
-                                        )
-                                        return (
-                                            <UnstyledListItem key={vehicle.url}>
-                                                <Link to={`/vehicle/${id}`}>
-                                                    {vehicle.name}
-                                                </Link>
-                                            </UnstyledListItem>
-                                        )
-                                    })}
-                                </UnstyledList>
-                            </SectionBody>
-                        </Section>
+                        <SectionOfRelatedItems
+                            title="Related vehicles"
+                            data={relatedVehiclesData}
+                            type="vehicles"
+                        />
+                    ) : null}
+                    {relatedSpeciesData ? (
+                        <SectionOfRelatedItems
+                            title="Related species"
+                            data={relatedSpeciesData}
+                            type="species"
+                        />
                     ) : null}
                 </Page>
             </div>

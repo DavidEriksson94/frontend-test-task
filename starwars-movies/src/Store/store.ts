@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit'
 import { filmApi } from '../Services/films'
 import { peopleApi } from '../Services/people'
 import { planetApi } from '../Services/planets'
+import { speciesApi } from '../Services/species'
 import { starshipsApi } from '../Services/starships'
 import { vehicleApi } from '../Services/vehicles'
 
@@ -12,6 +13,7 @@ export const store = configureStore({
         [planetApi.reducerPath]: planetApi.reducer,
         [starshipsApi.reducerPath]: starshipsApi.reducer,
         [vehicleApi.reducerPath]: vehicleApi.reducer,
+        [speciesApi.reducerPath]: speciesApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat(
@@ -19,7 +21,8 @@ export const store = configureStore({
             peopleApi.middleware,
             planetApi.middleware,
             starshipsApi.middleware,
-            vehicleApi.middleware
+            vehicleApi.middleware,
+            speciesApi.middleware
         ),
 })
 
