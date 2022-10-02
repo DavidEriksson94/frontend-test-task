@@ -12,6 +12,10 @@ export const Page = styled.div<{ roundedTop?: boolean }>`
     gap: 1rem;
     border-radius: ${(props) => (props.roundedTop ? '2rem 2rem 0 0' : '0')};
     margin-top: ${(props) => (props.roundedTop ? '-2rem' : '0')};
+    a {
+        color: yellow;
+        text-decoration: none;
+    }
 `
 
 export const PageHeader = styled.div`

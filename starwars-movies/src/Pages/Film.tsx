@@ -74,7 +74,11 @@ const Film = () => {
     }, [isSuccess])
 
     const renderOpeningCrawl = (text: string) =>
-        text.split('\r\n\r\n').map((paragraph) => <p>{paragraph}</p>)
+        text
+            .split('\r\n\r\n')
+            .map((paragraph, idx) => (
+                <p key={`paragraph-${idx}`}>{paragraph}</p>
+            ))
 
     if (isLoading) return null
     if (filmError) {

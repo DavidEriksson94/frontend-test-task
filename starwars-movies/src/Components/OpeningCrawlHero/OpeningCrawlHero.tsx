@@ -15,8 +15,10 @@ const OpeningCrawlHero = ({ title, text }: Props) => {
     const dividedText = () => {
         return text
             .split('\r\n\r\n')
-            .map((paragraph) => (
-                <OpeningCrawlParagraph>{paragraph}</OpeningCrawlParagraph>
+            .map((paragraph, idx) => (
+                <OpeningCrawlParagraph key={`crawl.${idx}`}>
+                    {paragraph}
+                </OpeningCrawlParagraph>
             ))
     }
     return (
