@@ -20,11 +20,13 @@ import {
     PageHeaderTitle,
 } from '../Components/GlobalStyles/Page'
 import { useGetMultipleStarshipsQuery } from '../Services/starships'
+import { useGetMultipleVehiclesQuery } from '../Services/vehicles'
 
 const Film = () => {
     const [relatedPlanets, setRelatedPlanets] = useState<number[]>([])
     const [relatedCharacters, setRelatedCharacters] = useState<number[]>([])
     const [relatedStarships, setRelatedStarships] = useState<number[]>([])
+    const [relatedVehicles, setRelatedVehicles] = useState<number[]>([])
     const { id } = useParams()
     const {
         data: filmById,
@@ -32,12 +34,15 @@ const Film = () => {
         isLoading,
         isSuccess,
     } = useGetFilmByIdQuery(Number(id) ? Number(id) : skipToken)
+
     const { data: relatedCharctersData, error: relatedCharactersError } =
         useGetMultiplePeopleQuery(relatedCharacters)
     const { data: relatedPlanetsData, error: relatedPlanetsError } =
         useGetMultiplePlanetsQuery(relatedPlanets)
     const { data: relatedStarshipsData, error: relatedStashipsError } =
         useGetMultipleStarshipsQuery(relatedStarships)
+    const { data: relatedVehiclesData, error: relatedVehiclesError } =
+        useGetMultipleVehiclesQuery(relatedVehicles)
 
     useEffect(() => {
         if (!isSuccess) return
@@ -53,6 +58,10 @@ const Film = () => {
             Number(extractParameterFromUrl(starship, 'starships'))
         )
         setRelatedStarships(starshipIds)
+        const vehicleIds: number[] = filmById.vehicles.map((vehicle) =>
+            Number(extractParameterFromUrl(vehicle, 'vehicles'))
+        )
+        setRelatedVehicles(vehicleIds)
     }, [isSuccess])
 
     const renderOpeningCrawl = (text: string) =>
@@ -71,7 +80,6 @@ const Film = () => {
             director,
             producer,
         } = filmById
-        console.log(filmById)
         return (
             <div>
                 <OpeningCrawlHero title={title} text={opening_crawl} />
@@ -154,7 +162,7 @@ const Film = () => {
                     {relatedStarshipsData ? (
                         <Section>
                             <SectionHeader>
-                                <SectionTitle>Related planets</SectionTitle>
+                                <SectionTitle>Related starships</SectionTitle>
                             </SectionHeader>
                             <SectionBody>
                                 <UnstyledList>
@@ -169,6 +177,30 @@ const Film = () => {
                                             >
                                                 <Link to={`/starship/${id}`}>
                                                     {starship.name}
+                                                </Link>
+                                            </UnstyledListItem>
+                                        )
+                                    })}
+                                </UnstyledList>
+                            </SectionBody>
+                        </Section>
+                    ) : null}
+                    {relatedVehiclesData ? (
+                        <Section>
+                            <SectionHeader>
+                                <SectionTitle>Related vehicles</SectionTitle>
+                            </SectionHeader>
+                            <SectionBody>
+                                <UnstyledList>
+                                    {relatedVehiclesData.map((vehicle) => {
+                                        const id = extractParameterFromUrl(
+                                            vehicle.url,
+                                            'vehicles'
+                                        )
+                                        return (
+                                            <UnstyledListItem key={vehicle.url}>
+                                                <Link to={`/vehicle/${id}`}>
+                                                    {vehicle.name}
                                                 </Link>
                                             </UnstyledListItem>
                                         )

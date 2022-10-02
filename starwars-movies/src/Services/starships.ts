@@ -19,11 +19,11 @@ export const starshipsApi = createApi({
             async queryFn(_arg, _queryApi, _extraOptions, fetchWithBQ) {
                 const result: Starship[] = []
                 for (let i = 0; i < _arg.length; i++) {
-                    const film = await fetchWithBQ(`/starships/${_arg[i]}`)
-                    if (film.error) {
-                        return { error: film.error as FetchBaseQueryError }
+                    const starship = await fetchWithBQ(`/starships/${_arg[i]}`)
+                    if (starship.error) {
+                        return { error: starship.error as FetchBaseQueryError }
                     }
-                    result.push(film.data as Starship)
+                    result.push(starship.data as Starship)
                 }
                 return { data: result }
             },

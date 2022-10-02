@@ -3,6 +3,7 @@ import { filmApi } from '../Services/films'
 import { peopleApi } from '../Services/people'
 import { planetApi } from '../Services/planets'
 import { starshipsApi } from '../Services/starships'
+import { vehicleApi } from '../Services/vehicles'
 
 export const store = configureStore({
     reducer: {
@@ -10,13 +11,15 @@ export const store = configureStore({
         [peopleApi.reducerPath]: peopleApi.reducer,
         [planetApi.reducerPath]: planetApi.reducer,
         [starshipsApi.reducerPath]: starshipsApi.reducer,
+        [vehicleApi.reducerPath]: vehicleApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat(
             filmApi.middleware,
             peopleApi.middleware,
             planetApi.middleware,
-            starshipsApi.middleware
+            starshipsApi.middleware,
+            vehicleApi.middleware
         ),
 })
 
