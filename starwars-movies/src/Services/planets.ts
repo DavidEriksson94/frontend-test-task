@@ -4,16 +4,34 @@ import {
     FetchBaseQueryError,
 } from '@reduxjs/toolkit/query/react'
 import { extractParameterFromUrl } from '../Utils/StringUtils'
-import { All, Planet } from './swapi.types'
+import { All, Planet, ISearchResult } from './swapi.types'
 
 export const planetApi = createApi({
     reducerPath: 'planetApi',
     baseQuery: fetchBaseQuery({ baseUrl: 'https://swapi.dev/api' }),
-    tagTypes: ['Planet', 'Planets'],
+    tagTypes: ['Planet', 'Planets', 'SearchedPlanets'],
     endpoints: (builder) => ({
         getAllPlanets: builder.query<All<Planet>, void>({
             query: () => `/planets`,
             providesTags: ['Planets'],
+        }),
+        getPlanetsByName: builder.query<ISearchResult, string>({
+            query: (term) => `/planets/?search=${term}`,
+            providesTags: (result, error, searchTerm) => [
+                { type: 'SearchedPlanets', id: searchTerm },
+            ],
+            transformResponse: (response: All<Planet>, meta, arg) => {
+                const results = response.results.map((planet) => ({
+                    title: planet.name,
+                    url: `/planets/${extractParameterFromUrl(
+                        planet.url,
+                        'planets'
+                    )}`,
+                }))
+                return {
+                    results,
+                }
+            },
         }),
         getPlanetById: builder.query<Planet, number>({
             query: (id) => `/planets/${id}`,
@@ -37,6 +55,7 @@ export const planetApi = createApi({
 
 export const {
     useGetAllPlanetsQuery,
+    useGetPlanetsByNameQuery,
     useGetPlanetByIdQuery,
     useGetMultiplePlanetsQuery,
 } = planetApi

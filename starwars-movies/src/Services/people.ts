@@ -3,16 +3,35 @@ import {
     fetchBaseQuery,
     FetchBaseQueryError,
 } from '@reduxjs/toolkit/query/react'
-import { All, People } from './swapi.types'
+import { extractParameterFromUrl } from '../Utils/StringUtils'
+import { All, ISearchResult, People } from './swapi.types'
 
 export const peopleApi = createApi({
     reducerPath: 'peopleApi',
     baseQuery: fetchBaseQuery({ baseUrl: 'https://swapi.dev/api' }),
-    tagTypes: ['People', 'Person'],
+    tagTypes: ['People', 'Person', 'SearchedPeople'],
     endpoints: (builder) => ({
         getAllPeople: builder.query<All<People>, void>({
             query: () => `/people`,
             providesTags: ['People'],
+        }),
+        getPeopleByName: builder.query<ISearchResult, string>({
+            query: (term) => `/people/?search=${term}`,
+            providesTags: (result, error, searchTerm) => [
+                { type: 'SearchedPeople', id: searchTerm },
+            ],
+            transformResponse: (response: All<People>, meta, arg) => {
+                const results = response.results.map((person) => ({
+                    title: person.name,
+                    url: `/people/${extractParameterFromUrl(
+                        person.url,
+                        'people'
+                    )}`,
+                }))
+                return {
+                    results,
+                }
+            },
         }),
         getPeopleById: builder.query<People, number>({
             query: (id) => `/people/${id}`,
@@ -36,6 +55,7 @@ export const peopleApi = createApi({
 
 export const {
     useGetAllPeopleQuery,
+    useGetPeopleByNameQuery,
     useGetPeopleByIdQuery,
     useGetMultiplePeopleQuery,
 } = peopleApi

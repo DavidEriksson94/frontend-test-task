@@ -3,16 +3,35 @@ import {
     fetchBaseQuery,
     FetchBaseQueryError,
 } from '@reduxjs/toolkit/query/react'
-import { All, Starship } from './swapi.types'
+import { extractParameterFromUrl } from '../Utils/StringUtils'
+import { All, ISearchResult, Starship } from './swapi.types'
 
 export const starshipsApi = createApi({
     reducerPath: 'starshipsApi',
     baseQuery: fetchBaseQuery({ baseUrl: 'https://swapi.dev/api' }),
-    tagTypes: ['Starship', 'Starships'],
+    tagTypes: ['Starship', 'Starships', 'SearchedStarships'],
     endpoints: (builder) => ({
         getAllStarships: builder.query<All<Starship>, void>({
             query: () => `/starships`,
             providesTags: ['Starships'],
+        }),
+        getStarshipsByName: builder.query<ISearchResult, string>({
+            query: (term) => `/starships/?search=${term}`,
+            providesTags: (result, error, searchTerm) => [
+                { type: 'SearchedStarships', id: searchTerm },
+            ],
+            transformResponse: (response: All<Starship>, meta, arg) => {
+                const results = response.results.map((planet) => ({
+                    title: planet.name,
+                    url: `/starships/${extractParameterFromUrl(
+                        planet.url,
+                        'starships'
+                    )}`,
+                }))
+                return {
+                    results,
+                }
+            },
         }),
         getStarshipById: builder.query<Starship, number>({
             query: (id) => `/starships/${id}`,
@@ -37,5 +56,6 @@ export const starshipsApi = createApi({
 export const {
     useGetAllStarshipsQuery,
     useGetStarshipByIdQuery,
+    useGetStarshipsByNameQuery,
     useGetMultipleStarshipsQuery,
 } = starshipsApi

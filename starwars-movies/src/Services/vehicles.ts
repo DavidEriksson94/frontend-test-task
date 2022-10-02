@@ -3,16 +3,35 @@ import {
     fetchBaseQuery,
     FetchBaseQueryError,
 } from '@reduxjs/toolkit/query/react'
-import { All, Vehicle } from './swapi.types'
+import { extractParameterFromUrl } from '../Utils/StringUtils'
+import { All, ISearchResult, Vehicle } from './swapi.types'
 
 export const vehicleApi = createApi({
     reducerPath: 'vehicleApi',
     baseQuery: fetchBaseQuery({ baseUrl: 'https://swapi.dev/api' }),
-    tagTypes: ['Vehicle', 'Vehicles'],
+    tagTypes: ['Vehicle', 'Vehicles', 'SearchedVehicles'],
     endpoints: (builder) => ({
         getAllVehicles: builder.query<All<Vehicle>, void>({
             query: () => `/vehicles`,
             providesTags: ['Vehicles'],
+        }),
+        getVehiclesByName: builder.query<ISearchResult, string>({
+            query: (term) => `/vehicles/?search=${term}`,
+            providesTags: (result, error, searchTerm) => [
+                { type: 'SearchedVehicles', id: searchTerm },
+            ],
+            transformResponse: (response: All<Vehicle>, meta, arg) => {
+                const results = response.results.map((vehicle) => ({
+                    title: vehicle.name,
+                    url: `/vehicles/${extractParameterFromUrl(
+                        vehicle.url,
+                        'vehicles'
+                    )}`,
+                }))
+                return {
+                    results,
+                }
+            },
         }),
         getVehicleById: builder.query<Vehicle, number>({
             query: (id) => `/vehicles/${id}`,
@@ -36,6 +55,7 @@ export const vehicleApi = createApi({
 
 export const {
     useGetAllVehiclesQuery,
+    useGetVehiclesByNameQuery,
     useGetVehicleByIdQuery,
     useGetMultipleVehiclesQuery,
 } = vehicleApi

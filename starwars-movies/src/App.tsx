@@ -1,21 +1,21 @@
 import React from 'react'
 import logo from './logo.svg'
 import './App.css'
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Film from './Pages/Film'
 import Planet from './Pages/Planet'
 import Species from './Pages/Species'
 import People from './Pages/People'
 import Starships from './Pages/Starships'
 import Vehicles from './Pages/Vehicles'
-import Films from './Pages/Films'
+import Search from './Pages/Search'
 
 function App() {
     return (
         <div className="App">
             <Router>
                 <Routes>
-                    <Route path="/films" element={<Films />} />
+                    <Route path="/" element={<Search />} />
                     <Route path="/films/:id" element={<Film />} />
                     <Route path="/people/:id" element={<People />} />
                     <Route path="/planets/:id" element={<Planet />} />

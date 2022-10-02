@@ -99,7 +99,7 @@ const People = () => {
                     {planetById ? (
                         <PageHeaderSubTitle>
                             From the planet{' '}
-                            <Link to={`/planet/${planetId}`}>
+                            <Link to={`/planets/${planetId}`}>
                                 {planetById?.name}
                             </Link>
                         </PageHeaderSubTitle>

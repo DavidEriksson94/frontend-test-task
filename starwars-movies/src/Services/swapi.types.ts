@@ -109,3 +109,9 @@ export interface All<T> {
     count: number
     results: T[]
 }
+export interface ISearchResult {
+    results: {
+        title: string
+        url: string
+    }[]
+}
