@@ -2,18 +2,21 @@ import { configureStore } from '@reduxjs/toolkit'
 import { filmApi } from '../Services/films'
 import { peopleApi } from '../Services/people'
 import { planetApi } from '../Services/planets'
+import { starshipsApi } from '../Services/starships'
 
 export const store = configureStore({
     reducer: {
         [filmApi.reducerPath]: filmApi.reducer,
         [peopleApi.reducerPath]: peopleApi.reducer,
         [planetApi.reducerPath]: planetApi.reducer,
+        [starshipsApi.reducerPath]: starshipsApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat(
             filmApi.middleware,
             peopleApi.middleware,
-            planetApi.middleware
+            planetApi.middleware,
+            starshipsApi.middleware
         ),
 })
 

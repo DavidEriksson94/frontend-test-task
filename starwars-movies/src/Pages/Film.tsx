@@ -19,13 +19,12 @@ import {
     PageHeaderSubTitle,
     PageHeaderTitle,
 } from '../Components/GlobalStyles/Page'
+import { useGetMultipleStarshipsQuery } from '../Services/starships'
 
 const Film = () => {
-    const [title, setTitle] = useState<string>()
-    const [releaseDate, setReleaseDate] = useState<string>()
-    const [episodeId, setEpisodeId] = useState<number>()
     const [relatedPlanets, setRelatedPlanets] = useState<number[]>([])
     const [relatedCharacters, setRelatedCharacters] = useState<number[]>([])
+    const [relatedStarships, setRelatedStarships] = useState<number[]>([])
     const { id } = useParams()
     const {
         data: filmById,
@@ -37,6 +36,8 @@ const Film = () => {
         useGetMultiplePeopleQuery(relatedCharacters)
     const { data: relatedPlanetsData, error: relatedPlanetsError } =
         useGetMultiplePlanetsQuery(relatedPlanets)
+    const { data: relatedStarshipsData, error: relatedStashipsError } =
+        useGetMultipleStarshipsQuery(relatedStarships)
 
     useEffect(() => {
         if (!isSuccess) return
@@ -48,6 +49,10 @@ const Film = () => {
             Number(extractParameterFromUrl(planet, 'planets'))
         )
         setRelatedPlanets(planetIds)
+        const starshipIds: number[] = filmById.starships.map((starship) =>
+            Number(extractParameterFromUrl(starship, 'starships'))
+        )
+        setRelatedStarships(starshipIds)
     }, [isSuccess])
 
     const renderOpeningCrawl = (text: string) =>
@@ -138,6 +143,32 @@ const Film = () => {
                                             <UnstyledListItem key={planet.url}>
                                                 <Link to={`/planet/${id}`}>
                                                     {planet.name}
+                                                </Link>
+                                            </UnstyledListItem>
+                                        )
+                                    })}
+                                </UnstyledList>
+                            </SectionBody>
+                        </Section>
+                    ) : null}
+                    {relatedStarshipsData ? (
+                        <Section>
+                            <SectionHeader>
+                                <SectionTitle>Related planets</SectionTitle>
+                            </SectionHeader>
+                            <SectionBody>
+                                <UnstyledList>
+                                    {relatedStarshipsData.map((starship) => {
+                                        const id = extractParameterFromUrl(
+                                            starship.url,
+                                            'starships'
+                                        )
+                                        return (
+                                            <UnstyledListItem
+                                                key={starship.url}
+                                            >
+                                                <Link to={`/starship/${id}`}>
+                                                    {starship.name}
                                                 </Link>
                                             </UnstyledListItem>
                                         )
